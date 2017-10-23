@@ -91,6 +91,7 @@ CreateDriver::CreateDriver(ros::NodeHandle& nh)
   undock_sub_ = nh.subscribe("undock", 10, &CreateDriver::undockCallback, this);
   define_song_sub_ = nh.subscribe("define_song", 10, &CreateDriver::defineSongCallback, this);
   play_song_sub_ = nh.subscribe("play_song", 10, &CreateDriver::playSongCallback, this);
+  main_motor_sub_ = nh.subscribe("main_motor", 10, &CreateDriver::setMainMotorCallback, this);
 
   // Setup publishers
   odom_pub_ = nh.advertise<nav_msgs::Odometry>("odom", 30);
@@ -237,6 +238,14 @@ void CreateDriver::playSongCallback(const ca_msgs::PlaySongConstPtr& msg)
   if (!robot_->playSong(msg->song))
   {
     ROS_ERROR_STREAM("[CREATE] Failed to play song " << msg->song);
+  }
+}
+
+void CreateDriver::setMainMotorCallback(const std_msgs::Float32ConstPtr& msg)
+{
+  if (!robot_->setMainMotor(msg->data))
+  {
+    ROS_ERROR_STREAM("[CREATE] Failed to set main motor " << msg->data);
   }
 }
 
